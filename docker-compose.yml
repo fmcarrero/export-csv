@@ -1,0 +1,42 @@
+version: "3.3"
+services:
+  app:
+    build:
+      context: ./ #current directory
+      dockerfile: Dockerfile #use the dockerfile called Dockerfile
+    ports:
+      - "8081:8081" #forward port from my app to the OS
+    environment:
+      GIN_MODE: release
+      PORT: ":8081"
+      HOST_DATABASE: "docker-mysql:3306"
+    links: # app needs that cassandra is deployed successfully before app runs
+      - docker-mysql
+    depends_on:
+      - docker-mysql
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://app:8081/ping"]
+    networks:
+      - minesweepernet
+    restart: always
+  docker-mysql:
+    image: mysql:latest
+    restart: always
+    ports:
+      - "3306:3306"
+    expose:
+      - 3306
+    volumes:
+      - ./init.sql:/data/application/init.sql
+    command: --init-file /data/application/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: movies
+      MYSQL_USER: usermovie
+      MYSQL_PASSWORD: root
+    networks:
+      - minesweepernet
+
+
+networks:
+  minesweepernet: # network to communicate containers with each other

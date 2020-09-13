@@ -17,6 +17,6 @@ func StartApp() {
 	}
 
 	if err := router.Run(port); err != nil {
-		logger.Errorf("error running server", err)
+		logger.Infof("err running server on port %s", port)
 	}
 }

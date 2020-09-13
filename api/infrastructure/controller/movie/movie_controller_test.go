@@ -1,16 +1,19 @@
 package movie_test
 
 import (
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"testing"
+
 	"github.com/fmcarrero/export-csv/api/infrastructure/config/app"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"net/http"
-	"net/http/httptest"
-	"testing"
 )
 
 func TestExport(t *testing.T) {
 
+	_ = os.Setenv("PORT", ":4576")
 	router := gin.Default()
 	app.MapUrls(router)
 	w := httptest.NewRecorder()
